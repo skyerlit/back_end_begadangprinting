@@ -25,8 +25,13 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::put('item/{id}', 'Api\ItemController@update');
     Route::delete('item/{id}', 'Api\ItemController@destroy');
 
-    Route::get('order', 'Api\OrderController@index');
-    Route::get('order/{id}', 'Api\OrderController@show');
+    //Route::get('order', 'Api\OrderController@index');
+    //Route::get('order/{id}', 'Api\OrderController@show');
+    Route::get('order/{id}', 'Api\OrderController@index');
+    Route::get('orderFinished/{id}', 'Api\OrderController@indexByFinished');
+    Route::get('orderProcessInAdmin', 'Api\OrderController@indexByProcessInAdmin');
+    Route::get('orderFinishedInAdmin', 'Api\OrderController@indexByFinishedInAdmin');
+    
     Route::post('order', 'Api\OrderController@store');
     Route::put('order/{id}', 'Api\OrderController@update');
     Route::delete('order/{id}', 'Api\OrderController@destroy');

@@ -9,20 +9,81 @@ use Validator;
 use File;
 use App\Item;
 use App\Order;
+use Storage;
 
 class OrderController extends Controller
 {
     //
-    public function index(){
-        $orders = Order::all(); 
-        
+    public function index($idPelanggan){
+        //$orders = Order::all(); 
+        $orders = Order::where([
+                                ['statusPesan', '=' , 'Process'],
+                                ['idPelanggan', '=' , $idPelanggan],
+                            ])->get();
         if(count($orders)>0){
             return response([
                 'message' => 'Retrieve All Success',
                 'data' => $orders
             ],200);
         }
+        
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ],404); 
+    }
 
+    public function indexByFinished($idPelanggan){
+        //$orders = Order::all(); 
+        //$orders = Order::where('statusPesan', '=' , 'Process')->get();
+        $orders = Order::where([
+            ['statusPesan', '=' , 'Finished'],
+            ['idPelanggan', '=' , $idPelanggan],
+        ])->get();
+
+        if(count($orders)>0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $orders
+            ],200);
+        }
+        
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ],404); 
+    }
+
+    public function indexByProcessInAdmin(){
+        //$orders = Order::all(); 
+        //$orders = Order::where('statusPesan', '=' , 'Process')->get();
+        $orders = Order::where('statusPesan', '=' , 'Process',)->get();
+
+        if(count($orders)>0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $orders
+            ],200);
+        }
+        
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ],404); 
+    }
+
+    public function indexByFinishedInAdmin(){
+        //$orders = Order::all(); 
+        //$orders = Order::where('statusPesan', '=' , 'Process')->get();
+        $orders = Order::where('statusPesan', '=' , 'Finished',)->get();
+
+        if(count($orders)>0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $orders
+            ],200);
+        }
+        
         return response([
             'message' => 'Empty',
             'data' => null
@@ -49,6 +110,7 @@ class OrderController extends Controller
         $uploadFolder = 'fileUser';
         $storeData = $request->all(); 
         $validate = Validator::make($storeData,[
+            'idPelanggan' => 'required',
             'namaItem' => 'required|max:60',
             'kategori' => 'required',
             'jumlah' => 'required|numeric',
