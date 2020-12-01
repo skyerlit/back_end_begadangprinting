@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('orderFinished/{id}', 'Api\OrderController@indexByFinished');
     Route::get('orderProcessInAdmin', 'Api\OrderController@indexByProcessInAdmin');
     Route::get('orderFinishedInAdmin', 'Api\OrderController@indexByFinishedInAdmin');
+    Route::put('orderFinishedStatus/{id}', 'Api\OrderController@updateStatus');
 
     Route::post('order', 'Api\OrderController@store');
     Route::put('order/{id}', 'Api\OrderController@update');
