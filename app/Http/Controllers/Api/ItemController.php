@@ -27,6 +27,23 @@ class ItemController extends Controller
         ],404); 
     }
 
+    public function indexByNamaItem(){
+        //$items = Item::all(); 
+        $items = Item::pluck('namaItem');
+        
+        if(count($items)>0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $items
+            ],200);
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ],404); 
+    }
+
     public function show($id){
         $item = Item::find($id); 
 

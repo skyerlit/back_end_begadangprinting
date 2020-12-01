@@ -21,6 +21,9 @@ Route::get('email/verify/{id}', 'Api\VerificationController@verify')->name('veri
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::get('item', 'Api\ItemController@index');
+
+    Route::get('itemByName', 'Api\ItemController@indexByNamaItem');
+
     Route::get('item/{id}', 'Api\ItemController@show');
     Route::post('item', 'Api\ItemController@store');
     Route::put('item/{id}', 'Api\ItemController@update');
