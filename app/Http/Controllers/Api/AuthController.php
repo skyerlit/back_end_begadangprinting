@@ -102,14 +102,21 @@ class AuthController extends Controller
             return response(['message' => 'Invalid Credentials'],401); //return error gagal login
 
         $user = Auth::user();
-        $token = $user->createToken('Authentication Token')->accessToken; //generate token
 
-        return response([
-            'message' => 'Authenticated',
-            'user' => $user,
-            'token_type' => 'Bearer',
-            'access_token' => $token
-        ]); //return data user dan token dalam bentuk json
+        if($user->status == 'user'){
+            return response(['message' => 'Anda login sebagai user'],401);
+        }
+
+        else{
+            $token = $user->createToken('Authentication Token')->accessToken; //generate token
+
+            return response([
+                'message' => 'Authenticated',
+                'user' => $user,
+                'token_type' => 'Bearer',
+                'access_token' => $token
+            ]); //return data user dan token dalam bentuk json
+        }
     }
 
     public function logout(Request $request){
