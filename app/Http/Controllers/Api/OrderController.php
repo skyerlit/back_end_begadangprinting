@@ -214,13 +214,27 @@ class OrderController extends Controller
         ]); 
 
         if($validate->fails())
+        {
             return response(['message' => $validate->errors()],400); 
-         
+        }
+            
+        $kolom = 'namaItem';
+        $item = Item::where($kolom, '=' , $request->namaItem)->first();
+
+        if($request->jenisWarna == "Colored")
+        {
+            $totalHarga = ($item->harga * $request->jumlah) + (($item->harga * $request->jumlah)*0.5);
+        }else{
+            $totalHarga = $item->harga * $request->jumlah;
+        }
+
+        $order->idItem = $item->id;
         $order->namaItem = $updateData['namaItem'];
         $order->kategori = $updateData['kategori'];
         $order->jumlah = $updateData['jumlah'];
         $order->jenisWarna = $updateData['jenisWarna'];
         $order->jenisServis = $updateData['jenisServis'];
+        $order->total = $totalHarga;
 
         $file = $request->file('filePesan');
         if($file!=null)

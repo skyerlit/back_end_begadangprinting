@@ -75,20 +75,23 @@ class AuthController extends Controller
         if($user->email_verified_at == null)
             return response(['message' => 'You need to verify your email'],401);
 
-        $token = $user->createToken('Authentication Token')->accessToken; //generate token
+        else{
+            $token = $user->createToken('Authentication Token')->accessToken; //generate token
 
-        return response([
-            'message' => 'Authenticated',
-            'user' => $user,
-            'token_type' => 'Bearer',
-            'access_token' => $token
-        ]); //return data user dan token dalam bentuk json
+            return response([
+                'message' => 'Authenticated',
+                'user' => $user,
+                'token_type' => 'Bearer',
+                'access_token' => $token
+            ]); //return data user dan token dalam bentuk json
+        }
     }
 
     public function loginAdmin(Request $request){
         $loginData = $request->all();
         $validate = Validator::make($loginData,[
-            'name' => 'required|max:60',
+            //'name' => 'required|max:60',
+            'email' => 'required|email:rfc,dns',
             'password' => 'required'
         ]); //membuat rule validasi input
 
