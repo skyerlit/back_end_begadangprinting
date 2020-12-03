@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Validator;
 use App\Promo;
 use File;
+use Storage;
 
 class PromoController extends Controller
 {
@@ -44,6 +45,7 @@ class PromoController extends Controller
     }
 
     public function store(Request $request){
+        $uploadFolder = 'gambarPromo';
         $storeData = $request->all(); 
         $validate = Validator::make($storeData,[
             'judul' => 'required|max:60|unique:promos',
@@ -52,17 +54,25 @@ class PromoController extends Controller
         ]); 
 
         if($validate->fails())
+        {
             return response(['message' => $validate->errors()],400); 
 
-        $file = $request->file('promoURL');
-        $fileName = time().$request->file('promoURL')->getClientOriginalName();
-        $path = base_path() . '/public/gambar promo/';
-        $file->move($path,$fileName);
+        }
 
         $newPromo = new Promo;
         $newPromo->judul = $request->judul;
         $newPromo->deskripsi = $request->deskripsi;
-        $newPromo->promoURL = $path . $fileName;
+
+        $file = $request->file('promoURL');
+        if($file!=null){
+            $file_upload_path = $file->store($uploadFolder,'public');
+            $uploadImageResponse = array(
+                "file_name" => basename($file_upload_path),
+                "file_url" => Storage::disk('public')->url($file_upload_path),
+                "mime" => $file->getClientMimeType()
+            );
+            $newPromo->promoURL = basename($file_upload_path);
+        }
         $newPromo->save();
 
         return response([
@@ -82,10 +92,8 @@ class PromoController extends Controller
         }
 
         if($promo -> delete()){
-            $image_path =  $promo->promoURL; 
-            if(File::exists($image_path)) {
-                File::delete($image_path);
-            }
+            Storage::disk('public')->delete('gambarPromo/' . $promo->promoURL);
+            
             return response([
                 'message' => 'Delete Promo Success',
                 'data' => $promo,
@@ -99,6 +107,7 @@ class PromoController extends Controller
     }
 
     public function update(Request $request,$id){
+        $uploadFolder = 'gambarPromo';
         $promo = Promo::find($id);
         if(is_null($promo)){
             return response([
@@ -123,15 +132,14 @@ class PromoController extends Controller
         $file = $request->file('promoURL');
         if($file!=null)
         {
-            if(File::exists($promo->promoURL)) {
-                File::delete($promo->promoURL);
-            }
-
-            $fileName = time().$request->file('promoURL')->getClientOriginalName();
-            $path = base_path() . '/public/gambar promo/';
-            $file->move($path,$fileName);
-
-            $promo->promoURL = $path . $fileName;
+            $file_upload_path = $file->store($uploadFolder,'public');
+            $uploadImageResponse = array(
+                "file_name" => basename($file_upload_path),
+                "file_url" => Storage::disk('public')->url($file_upload_path),
+                "mime" => $file->getClientMimeType()
+            );
+            Storage::disk('public')->delete('gambarPromo/' . $promo->promoURL);
+            $promo->promoURL = basename($file_upload_path);
         }
         
         if($promo->save()){

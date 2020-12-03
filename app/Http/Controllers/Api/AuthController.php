@@ -195,7 +195,7 @@ class AuthController extends Controller
                         "image_url" => Storage::disk('public')->url($file_upload_path),
                         "mime" => $file->getClientMimeType()
                     );
-
+                    Storage::disk('public')->delete('gambarUser/' . $user->fileUpload);
                     $user->fileUpload = basename($file_upload_path);
                 }
             }
@@ -246,7 +246,7 @@ class AuthController extends Controller
                         "image_url" => Storage::disk('public')->url($file_upload_path),
                         "mime" => $file->getClientMimeType()
                     );
-
+                    Storage::disk('public')->delete('gambarUser/' . $user->fileUpload);
                     $user->fileUpload = basename($file_upload_path);
                 }
             }

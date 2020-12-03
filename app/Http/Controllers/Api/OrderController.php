@@ -177,10 +177,7 @@ class OrderController extends Controller
         }
 
         if($order -> delete()){
-            $file_path =  $order->filePesan; 
-            if(File::exists($file_path)) {
-                File::delete($file_path);
-            }
+            Storage::disk('public')->delete('fileUser/' . $order->filePesan);
             return response([
                 'message' => 'Delete Order Success',
                 'data' => $order,
@@ -255,6 +252,7 @@ class OrderController extends Controller
                 "file_url" => Storage::disk('public')->url($file_upload_path),
                 "mime" => $file->getClientMimeType()
             );
+            Storage::disk('public')->delete('fileUser/' . $order->filePesan);
             $order->filePesan = basename($file_upload_path);
         }
         
